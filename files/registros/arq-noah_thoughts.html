@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>NOTES :: NOAH</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: "Courier New", monospace;
+    background: #050505;
+    color: #d0d0d0;
+}
+
+.header {
+    border: 2px solid #333;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    background: #0d0d0d;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: space-between;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.5fr;
+    gap: 16px;
+}
+
+.block {
+    border: 2px solid #222;
+    background: #0d0d0d;
+    padding: 14px;
+}
+
+.block-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #9e9e9e;
+}
+
+/* LISTA DE ARQUIVOS */
+.file-list {
+    background: #000;
+    border: 1px solid #222;
+    height: 420px;
+    overflow-y: auto;
+    font-size: 0.85em;
+}
+
+.file {
+    padding: 8px 10px;
+    border-bottom: 1px solid #111;
+    cursor: pointer;
+}
+
+.file:hover {
+    background: #111;
+}
+
+.file.active {
+    background: #1a1a1a;
+    color: #9ad1ff;
+}
+
+/* NOTA */
+.notes {
+    background: #000;
+    padding: 14px;
+    font-size: 0.9em;
+    color: #cfcfcf;
+    height: 420px;
+    overflow-y: auto;
+    border: 1px solid #222;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.note-dim { color: #8a8a8a; }
+.note-warn { color: #ff6b6b; }
+
+.footer {
+    margin-top: 12px;
+    font-size: 0.75em;
+    opacity: 0.5;
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid">
+
+    <!-- LISTA DE ARQUIVOS -->
+    <div class="block">
+        <div class="block-title">FILES</div>
+        <div class="file-list" id="fileList">
+            <div class="file" data-note="n1">ciclo_0001</div>
+            <div class="file" data-note="n2">temp_fragment</div>
+            <div class="file" data-note="n3">do_not_answer</div>
+            <div class="file" data-note="n4">echo_brecha</div>
+            <div class="file" data-note="n5">praguinha</div>
+            <div class="file" data-note="n6">culpabilidade</div>
+        </div>
+    </div>
+
+    <!-- VISUALIZAÇÃO -->
+    <div class="block">
+        <div class="block-title">CONTENT</div>
+        <div class="notes" id="noteContent"></div>
+        <div class="footer">
+            sistema sincronizado com o operador · edição bloqueada
+        </div>
+    </div>
+
+</div>
+
+<script>
+const notes = {
+    n1: `H40N = NOAH = N.ROOT
+
+eu não sinto meu corpo
+mais ainda estou consciente
+
+se eu estivesse morto
+isso deveria ter parado
+
+se eu estivesse vivo
+algo deveria doer (?)
+
+talvez eu esteja em algum tipo 
+de estado intermediário
+entre a vida e a morte
+um limbo`,
+
+    n2: `o tempo não se move
+mas eu me movo dentro dele
+
+ou estou me repetindo
+ou algo está me forçando a repetir`,
+
+    n3: 
+    `H40N = NINJAS = SISTEMAS
+
+eles não ignoram fatos
+se eu virar um problema
+eu viro uma pergunta
+se eu virar uma pergunta
+eles vão tentar responder
+
+eu preciso achar uma brecha
+uma falha no sistema
+uma falha que eu possa explorar
+uma falha que eu possa usar`,
+
+    n4: 
+    `ECHO | BRECHA = H40N
+
+não posso pedir ajuda diretamente
+pedidos somem
+preciso deixar um rastro
+    
+algo que diga "isso foi o Noah"
+sem que ele perceba
+
+se ninguém notar 
+eu continuo aqui
+
+se alguém notar
+eu viro alvo
+
+preciso correr esse risco`,
+
+    n5: 
+    `eu ... deveria ter visto isso
+
+ela cresceu, se ela cresceu
+então ... o tempo existe
+
+se o tempo existe, isso aqui foi construído
+se foi construído, alguém/algo o mantém ativo`,
+
+
+    n6:
+    `primeiro erro
+
+ele me deixou assistir
+porque acha que a consciência sobre ela me paralisaria
+o vídeo não foi para me consolar
+foi para me punir
+
+segundo erro
+
+ele apostou na culpa
+só que não sinto culpa`,
+
+};
+
+const fileList = document.getElementById("fileList");
+const noteContent = document.getElementById("noteContent");
+
+function loadNote(key) {
+    noteContent.innerHTML = notes[key]
+        .replace(/\n/g, "<br>")
+        .replace(/(não responda|corrompido|inserção)/gi,
+            '<span class="note-warn">$1</span>');
+}
+
+fileList.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("file")) return;
+
+    document.querySelectorAll(".file").forEach(f => f.classList.remove("active"));
+    e.target.classList.add("active");
+
+    loadNote(e.target.dataset.note);
+});
+</script>
+
+</body>
+</html>
