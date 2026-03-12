@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -51,7 +52,7 @@ opacity:.7;
 
 #main-grid{
 display:flex;
-height:80vh;
+min-height:80vh;
 }
 
 /* SIDEBAR */
@@ -97,7 +98,7 @@ overflow:auto;
 .file{
 background:#161616;
 border:1px solid #222;
-padding:10px;
+padding:12px;
 border-radius:6px;
 cursor:pointer;
 }
@@ -146,7 +147,56 @@ border:none;
 background:#111;
 }
 
+/* MOBILE */
+
+@media (max-width:768px){
+
+.terminal-wrapper{
+width:95%;
+margin:20px auto;
+}
+
+#main-grid{
+flex-direction:column;
+}
+
+#sidebar{
+width:100%;
+border-right:none;
+border-bottom:1px solid #333;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.sidebar-title{
+width:100%;
+}
+
+.folder{
+flex:1;
+text-align:center;
+}
+
+#file-area{
+padding:15px;
+}
+
+.viewer-window{
+width:95%;
+height:85%;
+margin:20px auto;
+}
+
+.file{
+font-size:14px;
+padding:14px;
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -215,11 +265,6 @@ relatorios: [
 {name:"relatorio h40n",path:"files/relatorios/arq-noah_operador.html"},
 ],
 
-ech0: [
-{name:"caso ech0",path:"files/ech0/caso_lurdes.html"},
-{name:"registro",path:"files/ech0/lurdes.jpeg"}
-],
-
 registros: [
 {name:"blueprint",path:"files/registros/arq-amanecer_experimento.html"},
 {name:"h40n thoughts",path:"files/registros/arq-noah_thoughts.html"}
@@ -263,6 +308,8 @@ background:#111;
 width:100%;
 height:auto;
 display:block;
+padding:10px;
+box-sizing:border-box;
 ">
 
 </body>
