@@ -1,94 +1,151 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ECHO - DOMÍNIO TEMPORAL</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H40N - N.ROOT</title>
 
 <style>
-:root{
-  --bg:#0a0a0a;
-  --panel:#111;
-  --panel-2:#1a1a1a;
-  --text:#e5e5e5;
-  --prompt:#00e676;
+
+body{
+background:#0a0a0a;
+margin:0;
+font-family:monospace;
+color:#e5e5e5;
 }
 
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--bg);
-  font-family:monospace;
-  color:var(--text);
-}
+/* TERMINAL */
 
 .terminal-wrapper{
-  width:92%;
-  max-width:980px;
-  margin:28px auto;
-  border-radius:10px;
-  overflow:hidden;
-  border:1px solid #222;
+width:90%;
+max-width:1200px;
+margin:40px auto;
+border:1px solid #333;
+border-radius:8px;
+overflow:hidden;
+background:#111;
+box-shadow:0 0 20px rgba(0,0,0,.6);
 }
 
 .terminal-header{
-  position:relative;
-  padding:12px;
-  background:var(--panel-2);
-  border-bottom:1px solid #222;
-  text-align:center;
-  font-weight:bold;
+background:#1a1a1a;
+padding:10px;
+border-bottom:1px solid #333;
+display:flex;
+align-items:center;
+gap:10px;
 }
 
-.presence{
-  position:absolute;
-  right:14px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:12px;
-  letter-spacing:1px;
-  padding:4px 10px;
-  border-radius:999px;
-  border:1px solid;
-  opacity:0.9;
+.dot{width:12px;height:12px;border-radius:50%;}
+.red{background:#ff5f56;cursor:pointer;}
+.yellow{background:#ffbd2e;}
+.green{background:#27c93f;}
+
+.terminal-title{
+flex:1;
+text-align:center;
+opacity:.7;
 }
 
-.presence.offline{ color:#ff4d4d; border-color:#ff4d4d; }
-.presence.noah{ color:#3ee9e9; border-color:#3ee9e9; }
-.presence.ech0{ color:#ffa200; border-color:#ffa200; }
-.presence.both{ color:#b388ff; border-color:#b388ff; }
+/* GRID */
 
-#output{
-  height:60vh;
-  padding:20px;
-  overflow-y:auto;
-  white-space:pre-wrap;
+#main-grid{
+display:flex;
+height:80vh;
 }
 
-.line{ margin:6px 0; }
-.user-INTRUSO{ color:#9aa4ac; }
-.user-NOAH{ color:#3ee9e9; }
-.user-ECH0{ color:#ffa200; }
-.user-SYSTEM{ color:#ff4d4d; }
+/* SIDEBAR */
 
-.terminal-input-area{
-  display:flex;
-  gap:10px;
-  padding:12px;
-  background:var(--panel-2);
-  border-top:1px solid #222;
+#sidebar{
+width:260px;
+border-right:1px solid #333;
+padding:15px;
+background:#111;
 }
 
-#prompt{ color:var(--prompt); }
-
-#chatInput{
-  flex:1;
-  background:transparent;
-  border:1px solid #333;
-  color:var(--text);
-  padding:8px;
-  font-family:monospace;
+.sidebar-title{
+font-size:12px;
+opacity:.6;
+margin-bottom:10px;
+letter-spacing:1px;
 }
+
+.folder{
+padding:8px;
+border-radius:6px;
+cursor:pointer;
+margin-bottom:6px;
+background:#161616;
+border:1px solid #222;
+}
+
+.folder:hover{
+background:#222;
+}
+
+/* FILE LIST */
+
+#file-area{
+flex:1;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+overflow:auto;
+}
+
+.file{
+background:#161616;
+border:1px solid #222;
+padding:10px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.file:hover{
+background:#222;
+}
+
+/* VIEWER */
+
+#viewerOverlay{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.8);
+z-index:999;
+}
+
+.viewer-window{
+width:90%;
+height:90%;
+margin:30px auto;
+background:#111;
+border:1px solid #333;
+border-radius:8px;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.viewer-header{
+background:#1a1a1a;
+padding:10px;
+display:flex;
+align-items:center;
+gap:10px;
+border-bottom:1px solid #333;
+}
+
+#viewerFrame{
+flex:1;
+border:none;
+background:#111;
+}
+
 </style>
 </head>
 
@@ -96,160 +153,140 @@ html,body{
 
 <div class="terminal-wrapper">
 
-  <div class="terminal-header">
-    <span>ECHO - DOMÍNIO TEMPORAL</span>
-    <span id="presenceIndicator" class="presence offline">OPERADORES OFF</span>
-  </div>
+<div class="terminal-header">
+<div class="dot red" onclick="closeViewer()"></div>
+<div class="dot yellow"></div>
+<div class="dot green"></div>
+<div class="terminal-title">NOAH RESEARCH TERMINAL — PUBLIC ARCHIVE</div>
+</div>
 
-  <div id="output"></div>
+<div id="main-grid">
 
-  <div class="terminal-input-area">
-    <div id="prompt">&gt;</div>
-    <input id="chatInput" placeholder="Digite algo..." />
-  </div>
+<div id="sidebar">
+
+<div class="sidebar-title">ARQUIVOS</div>
+
+<div class="folder" onclick="openFolder('demologia')">📁 Demologia</div>
+<div class="folder" onclick="openFolder('relatorios')">📁 Relatórios</div>
+<div class="folder" onclick="openFolder('registros')">📁 Registros H40N</div>
 
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<div id="file-area">
+Selecione uma pasta para acessar os arquivos.
+</div>
 
-/* FIREBASE */
-const firebaseConfig = {
-  apiKey: "AIzaSyAiSfe0sF-N4qCPjtxSe6vDD-xK878PSIg",
-  authDomain: "ech0-chat-3d1f4.firebaseapp.com",
-  projectId: "ech0-chat-3d1f4",
-  storageBucket: "ech0-chat-3d1f4.firebasestorage.app",
-  messagingSenderId: "307385370017",
-  appId: "1:307385370017:web:adc1b52765f34bf94177e0"
-};
+</div>
+</div>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+<!-- VIEWER -->
 
-/* ELEMENTOS */
-const output = document.getElementById("output");
-const input = document.getElementById("chatInput");
-const presenceIndicator = document.getElementById("presenceIndicator");
+<div id="viewerOverlay">
 
-/* ESTADO */
-let currentUser = "INTRUSO";
-let operatorsOnline = { NOAH:false, ECH0:false };
+<div class="viewer-window">
 
-/* PRESENÇA */
-function updatePresenceUI(){
-  presenceIndicator.className = "presence";
+<div class="viewer-header">
+<div class="dot red" onclick="closeViewer()"></div>
+<div class="dot yellow"></div>
+<div class="dot green"></div>
+<div class="terminal-title">VISUALIZANDO ARQUIVO</div>
+</div>
 
-  if (operatorsOnline.NOAH && operatorsOnline.ECH0) {
-    presenceIndicator.textContent = "NOAH + ECH0";
-    presenceIndicator.classList.add("both");
-    return;
-  }
-  if (operatorsOnline.NOAH) {
-    presenceIndicator.textContent = "NOAH ONLINE";
-    presenceIndicator.classList.add("noah");
-    return;
-  }
-  if (operatorsOnline.ECH0) {
-    presenceIndicator.textContent = "ECH0 ONLINE";
-    presenceIndicator.classList.add("ech0");
-    return;
-  }
+<iframe id="viewerFrame"></iframe>
 
-  presenceIndicator.textContent = "OPERADORES OFF";
-  presenceIndicator.classList.add("offline");
+</div>
+</div>
+
+<script>
+
+const files = {
+
+demologia: [
+{name:"origem quinn",path:"files/demologia/origem_quinn.jpg"},
+{name:"trajetoria nkt - quinn",path:"files/demologia/trajetoria_nkt-quinn.jpg"},
+{name:"culpa",path:"files/demologia/culpa_lurdes.jpg"},
+{name:"kai",path:"files/demologia/video_kai.jpg"},
+{name:"linhagem",path:"files/demologia/linhagem_asuna.jpg"},
+],
+
+relatorios: [
+{name:"relatorio amanecer",path:"files/relatorios/arq-amanecer_relatorio.html"},
+{name:"relatorio kitsune",path:"files/relatorios/arq-kitsune_relatorio.html"},
+{name:"relatorio h40n",path:"files/relatorios/arq-noah_operador.html"},
+],
+
+ech0: [
+{name:"caso ech0",path:"files/ech0/caso_lurdes.html"},
+{name:"registro",path:"files/ech0/lurdes.jpeg"}
+],
+
+registros: [
+{name:"blueprint",path:"files/registros/arq-amanecer_experimento.html"},
+{name:"h40n thoughts",path:"files/registros/arq-noah_thoughts.html"}
+]
+
 }
 
-updatePresenceUI();
+function openFolder(folder){
 
-/* LISTENER */
-const q = query(collection(db, "messages"), orderBy("createdAt"));
+const area=document.getElementById("file-area")
+area.innerHTML=""
 
-onSnapshot(q, (snapshot) => {
-  snapshot.docChanges().forEach(change => {
-    if (change.type !== "added") return;
+files[folder].forEach(file=>{
 
-    const data = change.doc.data();
-    if (!data.author) return;
+const div=document.createElement("div")
+div.className="file"
+div.innerText=file.name
+div.onclick=()=>openFile(file.path)
 
-    if (data.type === "LOGIN") {
-      operatorsOnline[data.author] = true;
-      updatePresenceUI();
-      return;
-    }
+area.appendChild(div)
 
-    if (data.type === "LOGOUT") {
-      operatorsOnline[data.author] = false;
-      updatePresenceUI();
-      return;
-    }
+})
 
-    if (data.type === "CLEAR") {
-      output.innerHTML = "";
-      return;
-    }
-
-    if (!data.text) return;
-
-    const line = document.createElement("div");
-    line.className = "line user-" + data.author;
-    line.textContent = data.author + "> " + data.text;
-    output.appendChild(line);
-    output.scrollTop = output.scrollHeight;
-  });
-});
-
-/* COMANDOS */
-function handleCommand(raw){
-  const cmd = raw.toLowerCase();
-
-  if (cmd === "login noah") {
-    currentUser = "NOAH";
-    return { author:"NOAH", text:"", type:"LOGIN" };
-  }
-
-  if (cmd === "login echo" || cmd === "login ech0") {
-    currentUser = "ECH0";
-    return { author:"ECH0", text:"", type:"LOGIN" };
-  }
-
-  if (cmd === "logout") {
-    const oldUser = currentUser;
-    currentUser = "INTRUSO";
-    return { author: oldUser, text:"Operador desconectado", type:"LOGOUT" };
-  }
-
-  if (cmd === "clear") {
-    return { author:"SYSTEM", text:"", type:"CLEAR" };
-  }
-
-  return null;
 }
 
-/* INPUT */
-input.addEventListener("keydown", async (e) => {
-  if (e.key !== "Enter" || !input.value.trim()) return;
+function openFile(path){
 
-  const raw = input.value.trim();
-  const command = handleCommand(raw);
+const viewer=document.getElementById("viewerOverlay")
+const frame=document.getElementById("viewerFrame")
 
-  await addDoc(collection(db, "messages"), {
-    author: command ? command.author : currentUser,
-    text: command ? command.text : raw,
-    type: command?.type || null,
-    createdAt: serverTimestamp()
-  });
+if(path.match(/\.(jpg|jpeg|png|gif)$/i)){
 
-  input.value = "";
-});
+frame.srcdoc=`
+<html>
+<body style="
+margin:0;
+background:#111;
+">
+
+<img src="${path}" style="
+width:100%;
+height:auto;
+display:block;
+">
+
+</body>
+</html>
+`
+
+}else{
+
+frame.src=path
+
+}
+
+viewer.style.display="block"
+
+}
+
+function closeViewer(){
+
+document.getElementById("viewerOverlay").style.display="none"
+document.getElementById("viewerFrame").src=""
+
+}
+
 </script>
+
 </body>
 </html>
